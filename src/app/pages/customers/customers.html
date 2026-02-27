@@ -1,0 +1,130 @@
+﻿<div class="flex flex-col gap-6">
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800">Customer Management</h2>
+            <p class="text-slate-500">Manage your store's customer database and contact info.</p>
+        </div>
+        <p-button label="Add Customer" icon="pi pi-user-plus" (onClick)="openNew()" />
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <p-table [value]="customerService.customers()" [rows]="10" [paginator]="true" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr class="bg-slate-50/50">
+                    <th class="w-24 pl-6 text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">PIN</th>
+                    <th class="text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">Name</th>
+                    <th class="text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">Email</th>
+                    <th class="text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">Phone</th>
+                    <th class="text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4 text-right pr-6">
+                        Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-cust>
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="pl-6">
+                        <span
+                            class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md text-[10px] font-bold tracking-widest border border-indigo-100">
+                            {{ cust.id }}
+                        </span>
+                    </td>
+                    <td class="font-bold text-slate-700">{{ cust.name }}</td>
+                    <td class="text-slate-500">{{ cust.email }}</td>
+                    <td class="text-slate-500">{{ cust.phone }}</td>
+                    <td class="text-right pr-6 px-2">
+                        <p-button icon="pi pi-pencil" [text]="true" severity="info" (onClick)="editCustomer(cust)" />
+                        <p-button icon="pi pi-trash" [text]="true" severity="danger" (onClick)="deleteCustomer(cust)" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<p-dialog [(visible)]="displayDialog" [modal]="true" styleClass="p-fluid" [style]="{width: '450px'}" [draggable]="false"
+    [resizable]="false">
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                <i class="pi pi-user text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-slate-800 leading-tight">
+                    {{ editMode() ? 'Edit Customer Profile' : 'Register New Customer' }}
+                </h3>
+                <p class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider mt-0.5">Contact & Account
+                    Details</p>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+        <div class="pt-2 flex flex-col gap-5">
+            @if (editMode()) {
+            <div class="field">
+                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Unique
+                    Customer PIN</label>
+                <div
+                    class="text-lg font-mono font-bold tracking-[0.5em] text-indigo-600 p-3 bg-slate-50/80 rounded-xl border border-dashed border-indigo-200 text-center">
+                    {{ customer.id }}
+                </div>
+            </div>
+            }
+            <div class="field">
+                <label for="name"
+                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Full
+                    Name</label>
+                <p-icon-field>
+                    <p-inputicon class="pi pi-id-card !text-slate-400" />
+                    <input type="text" pInputText id="name" [(ngModel)]="customer.name" required autofocus
+                        class="!bg-slate-50/50 focus:!bg-white !border-slate-200 !rounded-xl !py-3"
+                        placeholder="John Doe" />
+                </p-icon-field>
+            </div>
+            <div class="field">
+                <label for="email"
+                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Email
+                    Address</label>
+                <p-icon-field>
+                    <p-inputicon class="pi pi-envelope !text-slate-400" />
+                    <input type="email" pInputText id="email" [(ngModel)]="customer.email" required
+                        class="!bg-slate-50/50 focus:!bg-white !border-slate-200 !rounded-xl !py-3"
+                        placeholder="customer@domain.com" />
+                </p-icon-field>
+            </div>
+            <div class="field">
+                <label for="phone"
+                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Phone
+                    Number</label>
+                <p-icon-field>
+                    <p-inputicon class="pi pi-phone !text-slate-400" />
+                    <input type="text" pInputText id="phone" [(ngModel)]="customer.phone"
+                        class="!bg-slate-50/50 focus:!bg-white !border-slate-200 !rounded-xl !py-3"
+                        placeholder="+1 (555) 000-0000" />
+                </p-icon-field>
+            </div>
+            <div class="field">
+                <label for="address"
+                    class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Residential
+                    Address</label>
+                <p-icon-field>
+                    <p-inputicon class="pi pi-map-marker !text-slate-400" />
+                    <input type="text" pInputText id="address" [(ngModel)]="customer.address"
+                        class="!bg-slate-50/50 focus:!bg-white !border-slate-200 !rounded-xl !py-3"
+                        placeholder="123 Street Name, City, Country" />
+                </p-icon-field>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <div class="flex gap-3 justify-end mt-2">
+            <p-button label="Cancel" [text]="true" (onClick)="hideDialog()"
+                styleClass="!text-slate-500 !font-bold !py-3" />
+            <p-button [label]="editMode() ? 'Update Profile' : 'Register Customer'" icon="pi pi-check"
+                (onClick)="saveCustomer()"
+                styleClass="!rounded-xl !py-3 !px-6 !font-bold !bg-indigo-600 !border-indigo-600 shadow-lg shadow-indigo-100" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-toast />

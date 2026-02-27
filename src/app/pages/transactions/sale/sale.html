@@ -1,0 +1,81 @@
+<p-toast />
+<div class="max-w-2xl mx-auto">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-800">New Sale (Stock Out)</h2>
+        <p class="text-slate-500">Record a customer sale to decrease inventory.</p>
+    </div>
+
+    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex flex-col gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="field">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Select Customer (Optional)</label>
+                    <p-select [options]="customerService.customers()" [ngModel]="selectedCustomerId()"
+                        (ngModelChange)="selectedCustomerId.set($event)" optionLabel="name" optionValue="id"
+                        [filter]="true" filterBy="name" placeholder="Walk-in Customer" styleClass="w-full"
+                        [showClear]="true" />
+                </div>
+                <div class="field">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Select Book</label>
+                    <p-select [options]="bookService.books()" [ngModel]="selectedBookId()"
+                        (ngModelChange)="selectedBookId.set($event)" optionLabel="title" optionValue="id"
+                        [filter]="true" filterBy="title" placeholder="Choose a book..." styleClass="w-full"
+                        (onChange)="onBookSelect($event)" />
+                </div>
+            </div>
+
+            @if (selectedBookId()) {
+            <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-xl flex gap-4 items-center">
+                <div class="w-12 h-16 bg-white rounded shadow-sm overflow-hidden">
+                    @if (currentBook()?.imageUrl) {
+                    <img [src]="currentBook()?.imageUrl" class="w-full h-full object-cover">
+                    } @else {
+                    <div class="w-full h-full flex items-center justify-center bg-slate-100">
+                        <i class="pi pi-book text-slate-300"></i>
+                    </div>
+                    }
+                </div>
+                <div class="flex-1">
+                    <div class="font-bold text-emerald-900">{{ currentBook()?.title }}</div>
+                    <div class="text-xs text-emerald-600 font-medium">Available Stock: {{ currentBook()?.stock }} units
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-[10px] text-emerald-500 font-bold uppercase">Base Price</div>
+                    <div class="text-lg font-black text-emerald-700">${{ currentBook()?.price }}</div>
+                </div>
+            </div>
+            }
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="field">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Quantity</label>
+                    <p-inputNumber [ngModel]="quantity()" (ngModelChange)="quantity.set($event)" [min]="1"
+                        [max]="currentBook()?.stock || 0" styleClass="w-full" [showButtons]="true" />
+                    @if (selectedBookId() && quantity() > (currentBook()?.stock || 0)) {
+                    <div class="text-rose-500 text-[10px] mt-1 font-bold">Insufficient stock!</div>
+                    }
+                </div>
+                <div class="field">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Selling Price (per unit)</label>
+                    <p-inputNumber [ngModel]="price()" (ngModelChange)="price.set($event)" mode="currency"
+                        currency="USD" locale="en-US" styleClass="w-full" />
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-slate-500 text-sm">Sale Total</span>
+                    <span class="text-2xl font-black text-green-600">${{ (quantity() || 0) * (price() || 0) |
+                        number:'1.2-2' }}</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3 justify-end mt-4">
+                <p-button label="Clear" severity="secondary" [text]="true" (onClick)="clear()" />
+                <p-button label="Complete Sale" icon="pi pi-shopping-bag" severity="success" (onClick)="confirmSale()"
+                    [disabled]="!selectedBookId() || !quantity() || !price() || quantity() > (currentBook()?.stock || 0)" />
+            </div>
+        </div>
+    </div>
+</div>

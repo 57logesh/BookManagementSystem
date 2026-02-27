@@ -1,0 +1,114 @@
+<div class="flex flex-col gap-6">
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800">Store Analytics</h2>
+            <p class="text-slate-500">Welcome back, here's what's happening today.</p>
+        </div>
+        <p-button label="Download Report" icon="pi pi-download" severity="secondary" />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
+            <div class="relative z-10">
+                <div class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Total Books</div>
+                <div class="text-3xl font-black text-slate-900">{{ totalBooks() }}</div>
+                <div class="mt-2 text-xs text-green-600 font-medium flex items-center gap-1">
+                    <i class="pi pi-arrow-up text-[10px]"></i> 12% from last month
+                </div>
+            </div>
+            <i class="pi pi-book absolute -right-2 -bottom-2 text-indigo-50 text-7xl"></i>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
+            <div class="relative z-10">
+                <div class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Stock Value</div>
+                <div class="text-3xl font-black text-slate-900">${{ stockValue() | number:'1.2-2' }}</div>
+                <div class="mt-2 text-xs text-indigo-600 font-medium flex items-center gap-1">
+                    <i class="pi pi-sync text-[10px]"></i> Updated just now
+                </div>
+            </div>
+            <i class="pi pi-money-bill absolute -right-2 -bottom-2 text-emerald-50 text-7xl"></i>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
+            <div class="relative z-10">
+                <div class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Total Sales</div>
+                <div class="text-3xl font-black text-slate-900">${{ totalSales() | number:'1.2-2' }}</div>
+                <div class="mt-2 text-xs text-green-600 font-medium flex items-center gap-1">
+                    <i class="pi pi-arrow-up text-[10px]"></i> 8.4% today
+                </div>
+            </div>
+            <i class="pi pi-chart-line absolute -right-2 -bottom-2 text-blue-50 text-7xl"></i>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
+            <div class="relative z-10">
+                <div class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Low Stock</div>
+                <div class="text-3xl font-black text-rose-600">{{ lowStockCount() }}</div>
+                <div class="mt-2 text-xs text-rose-500 font-medium flex items-center gap-1">
+                    <i class="pi pi-exclamation-circle text-[10px]"></i> Action required
+                </div>
+            </div>
+            <i class="pi pi-exclamation-triangle absolute -right-2 -bottom-2 text-rose-50 text-7xl"></i>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-slate-800">Recent Transactions</h3>
+                <p-button label="View All" [text]="true" size="small" />
+            </div>
+            <p-table [value]="recentTransactions()" [rows]="5" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Date</th>
+                        <th>Book</th>
+                        <th>Type</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-tr>
+                    <tr>
+                        <td class="text-xs text-slate-500">{{ tr.date | date:'short' }}</td>
+                        <td class="font-medium text-slate-700">{{ tr.bookTitle }}</td>
+                        <td>
+                            <span
+                                [class]="tr.type === 'sale' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'"
+                                class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase">
+                                {{ tr.type }}
+                            </span>
+                        </td>
+                        <td class="text-right font-bold text-slate-900">${{ tr.total | number:'1.2-2' }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <h3 class="font-bold text-slate-800 mb-6">Low Stock Items</h3>
+            <div class="flex flex-col gap-4">
+                @for (book of lowStockBooks(); track book.id) {
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors">
+                    <div class="w-10 h-12 bg-slate-200 rounded overflow-hidden flex-shrink-0">
+                        @if (book.imageUrl) {
+                        <img [src]="book.imageUrl" class="w-full h-full object-cover">
+                        } @else {
+                        <div class="w-full h-full flex items-center justify-center bg-slate-200">
+                            <i class="pi pi-book text-slate-400"></i>
+                        </div>
+                        }
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-slate-700 truncate text-sm">{{ book.title }}</div>
+                        <div class="text-xs text-slate-500">Only {{ book.stock }} remaining</div>
+                    </div>
+                    <p-button icon="pi pi-plus" size="small" [rounded]="true" severity="info" />
+                </div>
+                } @empty {
+                <div class="text-center py-8 text-slate-400 italic">No low stock items</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

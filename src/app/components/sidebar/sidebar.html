@@ -1,0 +1,49 @@
+<aside class="app-sidebar flex flex-col">
+    <div class="flex-1 py-4">
+        <!-- Main Section -->
+        <div class="nav-section-title">Main Menu</div>
+        @for (item of mainMenu; track item.label) {
+        <a [routerLink]="item.routerLink" routerLinkActive="active" class="nav-item">
+            <span class="nav-icon"><i [class]="item.icon"></i></span>
+            <span>{{ item.label }}</span>
+        </a>
+        }
+
+        <!-- Transactions Section -->
+        <div class="nav-section-title">Operations</div>
+        @for (item of transactionMenu; track item.label) {
+        <a [routerLink]="item.routerLink" routerLinkActive="active" class="nav-item">
+            <span class="nav-icon"><i [class]="item.icon"></i></span>
+            <span>{{ item.label }}</span>
+        </a>
+        }
+
+        <!-- Logs Section -->
+        <div class="nav-section-title">Audits & Logs</div>
+        @for (item of historyMenu; track item.label) {
+        <a [routerLink]="item.routerLink" routerLinkActive="active" class="nav-item">
+            <span class="nav-icon"><i [class]="item.icon"></i></span>
+            <span>{{ item.label }}</span>
+        </a>
+        }
+    </div>
+
+    <!-- Bottom Action Card -->
+    <div class="p-4 border-t border-slate-200 bg-white/50">
+        <div
+            class="p-4 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 text-white relative overflow-hidden shadow-lg">
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Stock Alert</span>
+                </div>
+                <div class="text-xs font-bold mb-3 leading-tight">Some items are running low on stock.</div>
+                <button routerLink="/inventory"
+                    class="w-full py-2 bg-white/10 hover:bg-white/20 transition-colors rounded-lg text-[10px] font-bold uppercase tracking-wider border border-white/10">
+                    Review Inventory
+                </button>
+            </div>
+            <i class="pi pi-bolt absolute -right-2 -bottom-2 text-white/5 text-6xl"></i>
+        </div>
+    </div>
+</aside>

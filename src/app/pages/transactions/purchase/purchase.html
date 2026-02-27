@@ -1,0 +1,74 @@
+<p-toast />
+<div class="max-w-2xl mx-auto">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-800">New Purchase (Stock In)</h2>
+        <p class="text-slate-500">Record a new purchase from supplier to increase inventory.</p>
+    </div>
+
+    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex flex-col gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="field">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Select Supplier (Optional)</label>
+                    <p-select [options]="supplierService.suppliers()" [ngModel]="selectedSupplierId()"
+                        (ngModelChange)="selectedSupplierId.set($event)" optionLabel="name" optionValue="id"
+                        [filter]="true" filterBy="name" placeholder="Unknown Supplier" styleClass="w-full"
+                        [showClear]="true" />
+                </div>
+                <div class="field">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Select Book</label>
+                    <p-select [options]="bookService.books()" [ngModel]="selectedBookId()"
+                        (ngModelChange)="selectedBookId.set($event)" optionLabel="title" optionValue="id"
+                        [filter]="true" filterBy="title" placeholder="Choose a book..." styleClass="w-full"
+                        (onChange)="onBookSelect($event)" />
+                </div>
+            </div>
+
+            @if (selectedBookId()) {
+            <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-xl flex gap-4 items-center">
+                <div class="w-12 h-16 bg-white rounded shadow-sm overflow-hidden">
+                    @if (currentBook()?.imageUrl) {
+                    <img [src]="currentBook()?.imageUrl" class="w-full h-full object-cover">
+                    } @else {
+                    <div class="w-full h-full flex items-center justify-center bg-slate-100">
+                        <i class="pi pi-book text-slate-300"></i>
+                    </div>
+                    }
+                </div>
+                <div>
+                    <div class="font-bold text-indigo-900">{{ currentBook()?.title }}</div>
+                    <div class="text-xs text-indigo-600 font-medium">Current Stock: {{ currentBook()?.stock }} units
+                    </div>
+                </div>
+            </div>
+            }
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="field">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Quantity</label>
+                    <p-inputNumber [ngModel]="quantity()" (ngModelChange)="quantity.set($event)" [min]="1"
+                        styleClass="w-full" [showButtons]="true" />
+                </div>
+                <div class="field">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Purchase Price (per unit)</label>
+                    <p-inputNumber [ngModel]="price()" (ngModelChange)="price.set($event)" mode="currency"
+                        currency="USD" locale="en-US" styleClass="w-full" />
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-slate-500 text-sm">Total Investment</span>
+                    <span class="text-xl font-black text-slate-900">${{ (quantity() || 0) * (price() || 0) |
+                        number:'1.2-2' }}</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3 justify-end mt-4">
+                <p-button label="Clear" severity="secondary" [text]="true" (onClick)="clear()" />
+                <p-button label="Confirm Purchase" icon="pi pi-check" (onClick)="confirmPurchase()"
+                    [disabled]="!selectedBookId() || !quantity() || !price()" />
+            </div>
+        </div>
+    </div>
+</div>

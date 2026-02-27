@@ -1,0 +1,34 @@
+<div class="flex flex-col gap-6">
+    <div>
+        <h2 class="text-2xl font-bold text-slate-800">Purchase History</h2>
+        <p class="text-slate-500">Log of all initial stock and restock purchases.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden text-sm">
+        <p-table [value]="purchases()" [rows]="15" [paginator]="true" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+                <tr class="bg-slate-50/50">
+                    <th class="pl-6 text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">Date & Time</th>
+                    <th class="text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">Supplier</th>
+                    <th class="text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">Book Title</th>
+                    <th class="text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">Qty</th>
+                    <th class="text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">Unit Price</th>
+                    <th class="text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4 text-right pr-6">Total
+                        Outflow</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-tr>
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="pl-6 text-slate-500 text-[10px]">{{ tr.date | date:'short' }}</td>
+                    <td class="font-bold text-indigo-600">{{ tr.supplierName || 'Self/Unknown' }}</td>
+                    <td class="font-medium text-slate-800">{{ tr.bookTitle }}</td>
+                    <td class="font-medium">{{ tr.quantity }}</td>
+                    <td class="text-slate-600">${{ tr.price | number:'1.2-2' }}</td>
+                    <td class="text-right pr-6 px-2 font-black text-rose-600">
+                        -${{ tr.total | number:'1.2-2' }}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
