@@ -25,13 +25,8 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "node_modules/primeicons/primeicons.css",
-              "src/styles.css"
-            ],
-            "polyfills": [
-              "zone.js"
-            ]
+            "styles": ["node_modules/primeicons/primeicons.css", "src/styles.css"],
+            "polyfills": ["zone.js"]
           },
           "configurations": {
             "production": {
@@ -71,6 +66,9 @@
         },
         "test": {
           "builder": "@angular/build:unit-test"
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy"
         }
       }
     }
